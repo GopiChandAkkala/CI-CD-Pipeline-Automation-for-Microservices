@@ -32,9 +32,8 @@ pipeline{
                 stage('Terraform Init'){
 
                         steps {
-                              sh 'cd terraform/aws/'
-                              sh 'terraform init -no-color'
-                              sh 'terraform apply --auto-approve -no-color'
+                              sh 'terraform init -no-color terrform/aws/'
+                              sh 'terraform apply --auto-approve -no-color terraform/aws/'
                         }
 
                 }
