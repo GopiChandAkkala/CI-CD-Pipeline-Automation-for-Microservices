@@ -32,10 +32,12 @@ pipeline{
                 stage('Terraform Init'){
 
                         steps {
-                              sh 'terraform init -no-color -chdir=terrform/aws/'
-                              sh 'terraform apply --auto-approve -no-color -chdir=terraform/aws/'
-                        }
-
+			  dir('terraform/aws/') {
+                              sh 'terraform init -no-color'
+                              sh 'terraform apply --auto-approve'
+			     }
+			  }  
+                         
                 }
 	}
 
