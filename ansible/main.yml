@@ -1,0 +1,7 @@
+---
+- name: Check Connectivity
+  hosts: my-ec2
+  gather_facts: false
+  tasks:
+    - name: Verify Connectivity
+      ping:
