@@ -28,6 +28,16 @@ pipeline{
 				sh 'docker push akkalagopi/hello-world-python:latest'
 			}
 		}
+               
+                stage('Terraform Init'){
+
+                        steps {
+                              sh 'cd terraform/aws/'
+                              sh 'terraform init -no-color'
+                              sh 'terraform apply --auto-approve -no-color'
+                        }
+
+                }
 	}
 
 	post {
