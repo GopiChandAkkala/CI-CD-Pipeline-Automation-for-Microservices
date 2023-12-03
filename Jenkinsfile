@@ -4,6 +4,8 @@ pipeline{
 
 	environment {
 		DOCKERHUB_CREDENTIALS=credentials('dockerhub')
+		AWS_ACCESS_KEY_ID     = credentials('access-key-id')
+      		AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
 	}
 
 	stages {
@@ -29,14 +31,7 @@ pipeline{
 			}
 		}
 
-		stage('Copy AWS Credentials') {
-                       steps {
-                          script {
-                             sh 'cp /home/gopiakkala/.aws/credentials .aws/credentials'
-		                }
-		            }
-		        }
-		
+			
                 stage('Terraform Init'){
 
                         steps {
