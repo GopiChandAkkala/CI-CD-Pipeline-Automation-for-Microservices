@@ -28,7 +28,15 @@ pipeline{
 				sh 'docker push akkalagopi/hello-world-python:latest'
 			}
 		}
-               
+
+		stage('Copy AWS Credentials') {
+                       steps {
+                          script {
+                             sh 'cp ~/.aws/credentials .aws/credentials'
+		                }
+		            }
+		        }
+		
                 stage('Terraform Init'){
 
                         steps {
