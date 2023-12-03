@@ -47,7 +47,7 @@ pipeline{
 
                         steps {
 			  dir('ansible/') {
-                              sh 'ansible-playbook -i inventory main.yaml'                              
+                              sh 'ansible-playbook -i inventory main.yml'                              
 			     }
 			  }  
                          
