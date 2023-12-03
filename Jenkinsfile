@@ -32,7 +32,7 @@ pipeline{
 		stage('Copy AWS Credentials') {
                        steps {
                           script {
-                             sh 'cp ~/.aws/credentials .aws/credentials'
+                             sh 'cp /home/gopiakkala/.aws/credentials .aws/credentials'
 		                }
 		            }
 		        }
