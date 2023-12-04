@@ -2,6 +2,7 @@ resource "aws_instance" "cicd-ec2" {
   ami           = "ami-0230bd60aa48260c6"
   instance_type = "t2.micro"
   key_name      = aws_key_pair.my_keypair.key_name
+  security_groups = [aws_security_group.my_sp.name]
   depends_on = [
     aws_key_pair.my_keypair
   ]
