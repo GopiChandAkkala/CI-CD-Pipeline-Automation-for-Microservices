@@ -2,6 +2,7 @@
 - name: Install Docker on Amazon Linux
   hosts: my-ec2
   become: yes
+  gather_facts: false
 
   tasks:
     - name: Update package cache
