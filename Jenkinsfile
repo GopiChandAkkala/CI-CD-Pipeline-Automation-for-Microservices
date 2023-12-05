@@ -1,3 +1,4 @@
+def ec2PublicIp
 pipeline{
 
 	agent any
@@ -33,13 +34,13 @@ pipeline{
 		}
 
 			
-        stage('Terraform Init'){
+        stage('Terraform Init and Apply'){
 
             steps {
 			  dir('terraform/') {
                     script {
-			     sh 'terraform init -no-color'
-                             sh 'terraform apply -auto-approve'
+						    sh 'terraform init -no-color'
+                            def tfOutput = sh(script: 'terraform apply -auto-approve', returnStdout: true).trim()
                             
                    }
                       
@@ -54,7 +55,7 @@ pipeline{
             steps {
 			  dir('terraform/') {
                     script {
-						     def ec2PublicIp = sh(script: 'terraform output -json ec2_instance_public_ip', returnStdout: true).trim()
+						      ec2PublicIp = sh(script: 'terraform output -json ec2_instance_public_ip', returnStdout: true).trim()
                     
                               withEnv(['EC2_PUBLIC_IP=' + ec2PublicIp]) {
                               echo "EC2 Public IP: ${EC2_PUBLIC_IP}"
@@ -77,9 +78,9 @@ pipeline{
 			  dir('ansible/') {
 				
 				 script {
-                   
-                        writeFile file: 'inventory.ini', text: "my-ec2 ansible_host=${env.EC2_PUBLIC_IP} ansible_user=ec2-user"
-                        
+                        echo "About to create inventory file"
+                        writeFile file: 'inventory.ini', text: "my-ec2 ansible_host=${ec2PublicIp} ansible_user=ec2-user"
+                        echo "Inventory file is created"
                     
 					
                                                           
@@ -98,7 +99,7 @@ pipeline{
                     withCredentials([sshUserPrivateKey(credentialsId: 'aws-keypair', keyFileVariable: 'SSH_PRIVATE_KEY')]) {
                         
                         sh """
-                            ansible-playbook -i inventory.ini  main.yml --private-key=\$SSH_PRIVATE_KEY
+                            ansible-playbook -i inventory.ini  main.yml --private-key=\$SSH_PRIVATE_KEY --become
                         """
                     
 					}
