@@ -32,28 +32,36 @@ pipeline{
 		}
 
 			
-                stage('Terraform Init'){
+        stage('Terraform Init'){
 
-                        steps {
+            steps {
 			  dir('terraform/') {
                               sh 'terraform init -no-color'
                               sh 'terraform apply --auto-approve'
 			     }
-			  }  
+		  }  
                          
-                }
+        }
 
-		 stage('ansible playbook'){
+		stage('ansible playbook'){
 
-                        steps {
+            steps {
 			  dir('ansible/') {
-                              sh 'ansible-playbook -i inventory main.yml'                              
+				
+				 script {
+                    withCredentials([sshUserPrivateKey(credentialsId: 'aws-keypair', keyFileVariable: 'SSH_PRIVATE_KEY')]) {
+                        sh """
+                            ansible-playbook -i inventory main.yml --private-key=\$SSH_PRIVATE_KEY
+                        """
+                    
+					}
+                                                          
 			     }
 			  }  
                          
-                }
+            }
+	    }
 	}
-
 	post {
 		always {
 			sh 'docker logout'
