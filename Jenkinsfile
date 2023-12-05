@@ -5,7 +5,8 @@ pipeline{
 	environment {
 		DOCKERHUB_CREDENTIALS=credentials('dockerhub')
 		AWS_ACCESS_KEY_ID     = credentials('access-key-id')
-      		AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
+      	AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
+		
 	}
 
 	stages {
@@ -39,13 +40,36 @@ pipeline{
                     script {
 						    sh 'terraform init -no-color'
                             def tfOutput = sh(script: 'terraform apply -auto-approve', returnStdout: true).trim()
-                            env.EC2_PUBLIC_IP = sh(script: 'echo "${tfOutput}" | grep "ec2_instance_public_ip" | awk \'{print $3}\'', returnStdout: true).trim()
+                            
                    }
                       
 			    }
 		  }  
                          
         }
+        
+
+        stage('Terraform get IP'){
+
+            steps {
+			  dir('terraform/') {
+                    script {
+						     def ec2PublicIp = sh(script: 'terraform output -json ec2_instance_public_ip', returnStdout: true).trim()
+                    
+                              withEnv(['EC2_PUBLIC_IP=' + ec2PublicIp]) {
+                              echo "EC2 Public IP: ${EC2_PUBLIC_IP}"
+							  }
+                   }
+                      
+			    }
+		  }  
+                         
+        }
+
+
+
+
+
 
 		stage('ansible playbook get IP'){
 
