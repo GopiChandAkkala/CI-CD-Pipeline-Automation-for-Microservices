@@ -54,7 +54,7 @@ pipeline{
 				
 				 script {
                    
-                        writeFile file: 'inventory.ini', text: "[my-ec2]\nmy-ec2 ansible_host=${env.EC2_PUBLIC_IP} ansible_user=ec2-user"
+                        writeFile file: 'inventory.ini', text: "my-ec2 ansible_host=${env.EC2_PUBLIC_IP} ansible_user=ec2-user"
                         
                     
 					
