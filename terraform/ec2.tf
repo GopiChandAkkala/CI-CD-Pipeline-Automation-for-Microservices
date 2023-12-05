@@ -3,9 +3,7 @@ resource "aws_instance" "cicd-ec2" {
   instance_type = "t2.micro"
   key_name      = "my-keypair"
   security_groups = [aws_security_group.my_sp.name]
-  depends_on = [
-    aws_key_pair.my_keypair
-  ]
+  
 
   tags = {
     Name = "cicd-pipeline-automation"
