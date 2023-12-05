@@ -38,8 +38,8 @@ pipeline{
             steps {
 			  dir('terraform/') {
                     script {
-						    sh 'terraform init -no-color'
-                            def tfOutput = sh(script: 'terraform apply -auto-approve', returnStdout: true).trim()
+			     sh 'terraform init -no-color'
+                             sh 'terraform apply -auto-approve'
                             
                    }
                       
