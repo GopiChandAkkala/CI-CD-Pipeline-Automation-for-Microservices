@@ -10,14 +10,6 @@ resource "aws_instance" "cicd-ec2" {
   }
 }
 
-resource "null_resource" "execute-commands" {
-
-  provisioner "local-exec" {
-    command = <<EOT
-      
-      echo 'my-ec2 ansible_ssh_host=${aws_instance.cicd-ec2.public_ip} ansible_ssh_user=ec2-user > ../ansible/inventory
-    EOT
-  }
-  depends_on = [aws_instance.cicd-ec2]
+output "ec2_instance_public_ip" {
+  value = aws_instance.cicd-ec2.public_ip
 }
-

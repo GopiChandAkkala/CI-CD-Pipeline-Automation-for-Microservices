@@ -36,9 +36,13 @@ pipeline{
 
             steps {
 			  dir('terraform/') {
-                              sh 'terraform init -no-color'
-                              sh 'terraform apply --auto-approve'
-			     }
+                    script {
+						    sh 'terraform init -no-color'
+                            def tfOutput = sh(script: 'terraform apply -auto-approve', returnStdout: true).trim()
+                            env.EC2_PUBLIC_IP = sh(script: 'echo "${tfOutput}" | grep "ec2_instance_public_ip" | awk \'{print $3}\'', returnStdout: true).trim()
+                   }
+                      
+			    }
 		  }  
                          
         }
@@ -50,8 +54,9 @@ pipeline{
 				
 				 script {
                     withCredentials([sshUserPrivateKey(credentialsId: 'aws-keypair', keyFileVariable: 'SSH_PRIVATE_KEY')]) {
+                        writeFile file: 'inventory.ini', text: "[ec2]\nec2_instance ansible_host=${env.EC2_PUBLIC_IP} ansible_user=ec2-user"
                         sh """
-                            ansible-playbook -i inventory main.yml --private-key=\$SSH_PRIVATE_KEY
+                            ansible-playbook -i inventory.ini  main.yml --private-key=\$SSH_PRIVATE_KEY
                         """
                     
 					}
