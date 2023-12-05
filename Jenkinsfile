@@ -54,7 +54,7 @@ pipeline{
 				
 				 script {
                     withCredentials([sshUserPrivateKey(credentialsId: 'aws-keypair', keyFileVariable: 'SSH_PRIVATE_KEY')]) {
-                        writeFile file: 'inventory.ini', text: "[ec2]\nec2_instance ansible_host=${env.EC2_PUBLIC_IP} ansible_user=ec2-user"
+                        writeFile file: 'inventory.ini', text: "[my-ec2]\nmy-ec2 ansible_host=${env.EC2_PUBLIC_IP} ansible_user=ec2-user"
                         sh """
                             ansible-playbook -i inventory.ini  main.yml --private-key=\$SSH_PRIVATE_KEY
                         """
