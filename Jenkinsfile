@@ -47,14 +47,32 @@ pipeline{
                          
         }
 
-		stage('ansible playbook'){
+		stage('ansible playbook get IP'){
+
+            steps {
+			  dir('ansible/') {
+				
+				 script {
+                   
+                        writeFile file: 'inventory.ini', text: "[my-ec2]\nmy-ec2 ansible_host=${env.EC2_PUBLIC_IP} ansible_user=ec2-user"
+                        
+                    
+					
+                                                          
+			     }
+			  }  
+                         
+            }
+	    }
+
+		stage('ansible play playbook'){
 
             steps {
 			  dir('ansible/') {
 				
 				 script {
                     withCredentials([sshUserPrivateKey(credentialsId: 'aws-keypair', keyFileVariable: 'SSH_PRIVATE_KEY')]) {
-                        writeFile file: 'inventory.ini', text: "[my-ec2]\nmy-ec2 ansible_host=${env.EC2_PUBLIC_IP} ansible_user=ec2-user"
+                        
                         sh """
                             ansible-playbook -i inventory.ini  main.yml --private-key=\$SSH_PRIVATE_KEY
                         """
