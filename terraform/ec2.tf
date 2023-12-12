@@ -6,7 +6,7 @@ resource "aws_instance" "cicd-ec2" {
   
 
   tags = {
-    Name = "cicd-pipeline-automation"
+    Name = "python-app"
   }
 }
 
