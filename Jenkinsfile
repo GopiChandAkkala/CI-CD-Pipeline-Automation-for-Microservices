@@ -83,6 +83,7 @@ pipeline {
     post {
         always {
             sh 'docker logout'
+            sh "echo Python-App is available at http://${ec2PublicIp}:8080"
         }
     }
 }
