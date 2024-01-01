@@ -1,5 +1,4 @@
 def ec2PublicIp
-
 pipeline {
     agent any
 
